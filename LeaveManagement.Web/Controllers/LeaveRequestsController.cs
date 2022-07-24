@@ -18,12 +18,16 @@ namespace LeaveManagement.Web.Controllers
     public class LeaveRequestsController : Controller
     {
         private readonly ILeaveTypeRepository _leaveTypeRepository;
+        private readonly ILogger<LeaveRequestsController> _logger;
         private readonly ILeaveRequestRepository _leaveRequestRepository;
 
-        public LeaveRequestsController(ILeaveRequestRepository leaveRequestRepository, ILeaveTypeRepository leaveTypeRepository)
+        public LeaveRequestsController(ILeaveRequestRepository leaveRequestRepository, 
+            ILeaveTypeRepository leaveTypeRepository,
+            ILogger<LeaveRequestsController> logger)
         {
             _leaveRequestRepository = leaveRequestRepository;
             _leaveTypeRepository = leaveTypeRepository;
+            _logger = logger;
         }
 
         [Authorize(Roles = Roles.Administrator)]
@@ -61,9 +65,9 @@ namespace LeaveManagement.Web.Controllers
             {
                 await _leaveRequestRepository.ChangeApprovalStatus(id, approved);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                _logger.LogError(ex, "Error Aproving Leave Request");
                 throw;
             }
             return RedirectToAction(nameof(Index));
@@ -77,9 +81,9 @@ namespace LeaveManagement.Web.Controllers
             {
                 await _leaveRequestRepository.CancelLeaveRequest(id);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                _logger.LogError(ex, "Error Canceling Leave Request");
                 throw;
             }
 
@@ -116,8 +120,9 @@ namespace LeaveManagement.Web.Controllers
                     ModelState.AddModelError(string.Empty, "You have exceeded your allocation with this request.");
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Error Creating Leave Request");
                 ModelState.AddModelError(string.Empty, "An Error Has Occurred. Please Try Again Later");
             }
 

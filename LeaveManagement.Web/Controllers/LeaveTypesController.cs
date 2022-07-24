@@ -19,18 +19,24 @@ namespace LeaveManagement.Web.Controllers
     {
         private readonly IMapper _mapper;
         private readonly ILeaveAllocationRepository _leaveAllocationRepository;
+        private readonly ILogger<LeaveTypesController> _logger;
         private readonly ILeaveTypeRepository _leaveTypeRepository;
 
-        public LeaveTypesController(ILeaveTypeRepository leaveTypeRepository, IMapper mapper, ILeaveAllocationRepository leaveAllocationRepository)
+        public LeaveTypesController(ILeaveTypeRepository leaveTypeRepository, 
+            IMapper mapper, 
+            ILeaveAllocationRepository leaveAllocationRepository,
+            ILogger<LeaveTypesController> logger)
         {
             _leaveTypeRepository = leaveTypeRepository;
             _mapper = mapper;
             _leaveAllocationRepository = leaveAllocationRepository;
+            _logger = logger;
         }
 
         // GET: LeaveTypes
         public async Task<IActionResult> Index()
         {
+            throw new Exception("Testing logging");
             var leaveTypes = _mapper.Map<List<LeaveTypeVM>>(await _leaveTypeRepository.GetAllAsync());
             return View(leaveTypes);
         }
@@ -94,11 +100,18 @@ namespace LeaveManagement.Web.Controllers
                 return NotFound();
             }
 
+            var leaveType = await _leaveTypeRepository.GetAsync(id);
+
+            if(leaveType == null)
+            {
+                return NotFound();
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var leaveType = _mapper.Map<LeaveType>(leaveTypeVM);
+                    _mapper.Map(leaveTypeVM, leaveType);   
                     await _leaveTypeRepository.UpdateAsync(leaveType);
                 }
                 catch (DbUpdateConcurrencyException)
