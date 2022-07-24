@@ -101,7 +101,7 @@ namespace LeaveManagement.Web.Repositories
             return await _context.LeaveRequests.Where(x => x.RequestingEmployeeId == employeeId).ToListAsync();
         }
 
-        public async Task<LeaveRequestVM?> GetLeaveRequestsAsync(int? id)
+        public async Task<LeaveRequestVM> GetLeaveRequestsAsync(int? id)
         {
             var leaveRequest = await _context.LeaveRequests
                 .Include(_q => _q.LeaveType)
