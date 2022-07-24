@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using LeaveManagement.Web.Data;
+using LeaveManagement.Data;
 
 namespace LeaveManagement.Web.Areas.Identity.Pages.Account
 {
